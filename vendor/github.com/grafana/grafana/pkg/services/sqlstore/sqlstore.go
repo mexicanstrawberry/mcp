@@ -19,6 +19,9 @@ import (
 	"github.com/go-xorm/xorm"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
+	cfenv "github.com/cloudfoundry-community/go-cfenv"
+
+	"github.com/aws/aws-sdk-go/service/marketplacecommerceanalytics"
 )
 
 type MySQLConfig struct {
@@ -174,5 +177,20 @@ func LoadConfig() {
 		mysqlConfig.ClientKeyPath = sec.Key("client_key_path").String()
 		mysqlConfig.ClientCertPath = sec.Key("client_cert_path").String()
 		mysqlConfig.ServerCertName = sec.Key("server_cert_name").String()
+	}
+
+	appEnv, _ := cfenv.Current()
+
+	mysqlService, err := appEnv.Services.WithLabel("mysql-5.5")
+	if err != nil {
+		var ok bool
+		DbCfg.User, ok = mysqlService.Credentials["user"].(string)
+		if !ok {
+			sqlog.Error("No valid Mysql username")
+		}
+		DbCfg.Pwd, ok = mysqlService.Credentials["password"].(string)
+		if !ok {
+			sqlog.Error("No valid Mysql password")
+		}
 	}
 }
