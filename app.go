@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	DEFAULT_PORT = "8080"
+	DEFAULT_PORT = "8081"
 )
 
 var index = template.Must(template.ParseFiles(
