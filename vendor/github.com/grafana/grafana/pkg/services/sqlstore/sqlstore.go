@@ -179,19 +179,21 @@ func LoadConfig() {
 
 	appEnv, _ := cfenv.Current()
 
-	mysqlService, err := appEnv.Services.WithName("mysql-5.5")
-	if err != nil {
+	mysqlService, err := appEnv.Services.WithName("ms-mysql")
+	if err == nil {
 
 		var ok bool
 		DbCfg.User, ok = mysqlService.Credentials["user"].(string)
 		if !ok {
 			sqlog.Error("No valid Mysql username")
 		} else {
-			sqlog.Info("Set username to", DbCfg.User)
+			sqlog.Info("Set username from VCAP_SERVICES")
 		}
 		DbCfg.Pwd, ok = mysqlService.Credentials["password"].(string)
 		if !ok {
 			sqlog.Error("No valid Mysql password")
+		} else {
+			sqlog.Info("Set password from VCAP_SERVICES")
 		}
 	}
 }
