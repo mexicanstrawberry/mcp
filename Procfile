@@ -1,1 +1,1 @@
-web: hub.jazz.net/git/ansi/MS-FE
+web: MS-FE
