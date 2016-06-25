@@ -4,12 +4,13 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	//for extracting service credentials from VCAP_SERVICES
 	//"github.com/cloudfoundry-community/go-cfenv"
 )
 
 const (
-	DEFAULT_PORT = "12345"
+	DEFAULT_PORT = "80"
 )
 
 var index = template.Must(template.ParseFiles(
@@ -23,8 +24,9 @@ func helloworld(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	var port string
-
-	port = DEFAULT_PORT
+	if port = os.Getenv("PORT"); len(port) == 0 {
+		port = DEFAULT_PORT
+	}
 
 	http.HandleFunc("/", helloworld)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
