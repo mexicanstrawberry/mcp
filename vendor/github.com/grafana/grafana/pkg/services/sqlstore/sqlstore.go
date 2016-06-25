@@ -20,8 +20,6 @@ import (
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 	cfenv "github.com/cloudfoundry-community/go-cfenv"
-
-	"github.com/aws/aws-sdk-go/service/marketplacecommerceanalytics"
 )
 
 type MySQLConfig struct {
@@ -181,12 +179,15 @@ func LoadConfig() {
 
 	appEnv, _ := cfenv.Current()
 
-	mysqlService, err := appEnv.Services.WithLabel("mysql-5.5")
+	mysqlService, err := appEnv.Services.WithName("mysql-5.5")
 	if err != nil {
+
 		var ok bool
 		DbCfg.User, ok = mysqlService.Credentials["user"].(string)
 		if !ok {
 			sqlog.Error("No valid Mysql username")
+		} else {
+			sqlog.Info("Set username to", DbCfg.User)
 		}
 		DbCfg.Pwd, ok = mysqlService.Credentials["password"].(string)
 		if !ok {
