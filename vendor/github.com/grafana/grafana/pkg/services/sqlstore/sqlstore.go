@@ -194,6 +194,11 @@ func LoadConfig() {
 			sqlog.Error("No valid Mysql password")
 		} else {
 			sqlog.Info("Set password from VCAP_SERVICES")
+			sqlog.Info(DbCfg.Host)
+			sqlog.Info(DbCfg.Name)
+			sqlog.Info(DbCfg.User)
+			sqlog.Info(DbCfg.Pwd)
+			sqlog.Info(DbCfg.Type)
 		}
 	}
 }

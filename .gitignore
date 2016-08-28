@@ -1,3 +1,5 @@
-launchConfigurations/
-*.idea
+!.gitignore
+*~
+.DS-STORE
+*.idea/
 *.iml
