@@ -16,7 +16,9 @@ var Channel *Event
 
 type Event chan interface{}
 
-type MqttRecive map[string]interface{}
+type MqttRecive struct {
+	Map map[string]interface{}
+}
 
 type Ctl map[string]int
 

@@ -14,8 +14,8 @@ import (
 	"hub.jazz.net/git/ansi/MS-FE/recipe"
 	"hub.jazz.net/git/ansi/MS-FE/sensor"
 
-	"hub.jazz.net/git/ansi/MS-FE/gatekeeper"
 	"hub.jazz.net/git/ansi/MS-FE/events"
+	"hub.jazz.net/git/ansi/MS-FE/gatekeeper"
 )
 
 const (
@@ -56,12 +56,10 @@ func main() {
 
 	clog.Infoln("init mexicanstrawberry")
 
+	eventChannel := make(chan interface{})
+
 	gatekeeper.MqttData.Dial()
-
-
-
-
-
+	gatekeeper.MqttData.SetChannel(eventChannel)
 
 	//i := 0
 	//for _ = range time.Tick(time.Duration(1) * time.Second) {
@@ -90,13 +88,12 @@ func main() {
 
 	go s.Run(ctl)
 
-
-	for{
-		l := <-events.Channel
+	for {
+		l := <-eventChannel
 		clog.Info("===================================")
-		switch e := l.(type){
+		switch e := l.(type) {
 		case events.MqttRecive:
-			for k,v := range e {
+			for k, v := range e.Map {
 				clog.Info(k)
 				clog.Info(v)
 			}
