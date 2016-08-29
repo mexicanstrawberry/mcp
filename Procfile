@@ -1,1 +1,1 @@
-web: mcp
+web: ./mcp

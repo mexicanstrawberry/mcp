@@ -6,5 +6,5 @@ applications:
   name: msmcp
   host: msmcp
   disk_quota: 1024M
-  command: mcp
+  buildpack: binary-buildpack
 
