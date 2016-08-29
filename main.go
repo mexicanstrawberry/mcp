@@ -13,6 +13,9 @@ import (
 	clog "github.com/morriswinkler/cloudglog"
 	"hub.jazz.net/git/ansi/MS-FE/recipe"
 	"hub.jazz.net/git/ansi/MS-FE/sensor"
+
+	"hub.jazz.net/git/ansi/MS-FE/gatekeeper"
+	"hub.jazz.net/git/ansi/MS-FE/events"
 )
 
 const (
@@ -53,25 +56,12 @@ func main() {
 
 	clog.Infoln("init mexicanstrawberry")
 
-	opts := mqtt.NewClientOptions()
+	gatekeeper.MqttData.Dial()
 
-	opts.SetClientID("a:7mqeaj:8xgxdkgi7y")
-	opts.SetUsername("a-7mqeaj-8xgxdkgi7y")
-	opts.SetPassword("saiwUQG6n2@uwFbC!o")
-	opts.AddBroker("tls://7mqeaj.messaging.internetofthings.ibmcloud.com:8883")
 
-	//opts.SetClientID("ssl-sample").SetTLSConfig(tlsconfig)
-	opts.SetDefaultPublishHandler(f)
 
-	mqttClient := mqtt.NewClient(opts)
 
-	if token := mqttClient.Connect(); token.Wait() && token.Error() != nil {
-		panic(token.Error())
-	}
 
-	//mqttClient.Subscribe("iot-2/type/RPi/id/dummyposter/evt/Plant1/fmt/json", 0, f)
-
-	mqttClient.Subscribe("iot-2/type/RPi/id/Plant1/evt/+/fmt/json", 0, sensorMessage)
 
 	//i := 0
 	//for _ = range time.Tick(time.Duration(1) * time.Second) {
@@ -100,9 +90,20 @@ func main() {
 
 	go s.Run(ctl)
 
+
+	for{
+		l := <-events.Channel
+		clog.Info("===================================")
+		switch e := l.(type){
+		case events.MqttRecive:
+			for k,v := range e {
+				clog.Info(k)
+				clog.Info(v)
+			}
+		}
+	}
+
 	time.Sleep(time.Duration(60) * time.Second)
 	//ctl <- 1
-
-	mqttClient.Disconnect(250)
 
 }

@@ -12,7 +12,7 @@ var priorityMap = map[Priority]string{
 	P_MIN:  "Lowest priority",
 }
 
-var Channel Event
+var Channel *Event
 
 type Event chan interface{}
 
@@ -23,10 +23,12 @@ type Ctl map[string]int
 type Priority int
 
 func (p *Priority) String() string {
-	if s, ok := priorityMap[p]; ok {
+
+	if s, ok := priorityMap[*p]; ok {
 		return s
 	}
 	return "unknown priority"
+
 }
 
 type MqttCommand struct {
