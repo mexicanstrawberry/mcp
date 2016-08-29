@@ -3,6 +3,4 @@
 .DS-STORE
 *.idea/
 *.iml
-!vendor/vendor.json
-!vendor/hub.jazz.net
-vendor/*
+vendor
