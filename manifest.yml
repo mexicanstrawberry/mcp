@@ -6,5 +6,5 @@ applications:
   name: msmcp
   host: msmcp
   disk_quota: 1024M
-  buildpack: binary-buildpack
+  buildpack: https://github.com/cloudfoundry/binary-buildpack
 
