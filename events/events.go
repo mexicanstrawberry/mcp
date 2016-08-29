@@ -12,6 +12,8 @@ var priorityMap = map[Priority]string{
 	P_MIN:  "Lowest priority",
 }
 
+var Channel Event
+
 type Event chan interface{}
 
 type MqttRecive map[string]interface{}
