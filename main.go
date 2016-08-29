@@ -9,7 +9,7 @@ import (
 
 	"time"
 
-	clog "git.laydrop.com/m.winkler/cloudglog"
+	clog "github.com/morriswinkler/cloudglog"
 	"github.com/eclipse/paho.mqtt.golang"
 	"hub.jazz.net/git/ansi/MS-FE/recipe"
 	"hub.jazz.net/git/ansi/MS-FE/sensor"

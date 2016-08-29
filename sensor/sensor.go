@@ -6,7 +6,7 @@ import (
 
 	"fmt"
 
-	clog "git.laydrop.com/m.winkler/cloudglog"
+	clog "github.com/morriswinkler/cloudglog"
 	"hub.jazz.net/git/ansi/MS-FE/recipe"
 )
 
