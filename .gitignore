@@ -3,3 +3,5 @@
 .DS-STORE
 *.idea/
 *.iml
+!vendor/vendor.json
+vendor/*
