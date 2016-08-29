@@ -3,6 +3,30 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "ae6ZYaLAGWS6Z9MFWNP9qsqD5rY=",
+			"path": "github.com/eclipse/paho.mqtt.golang",
+			"revision": "946fb4cba30a0318a7ff7f236e88a89446a6c273",
+			"revisionTime": "2016-08-16T13:16:25Z"
+		},
+		{
+			"checksumSHA1": "nyoACqqawn6vmFfyXV5ezToUjSQ=",
+			"path": "github.com/eclipse/paho.mqtt.golang/packets",
+			"revision": "946fb4cba30a0318a7ff7f236e88a89446a6c273",
+			"revisionTime": "2016-08-16T13:16:25Z"
+		},
+		{
+			"checksumSHA1": "pvw5Sv9yu6yuc2b6Nbt1PUNUFy4=",
+			"path": "github.com/morriswinkler/cloudglog",
+			"revision": "f74343bb59c9a135bafaac408f5115535d4e8813",
+			"revisionTime": "2016-07-28T23:01:07Z"
+		},
+		{
+			"checksumSHA1": "likOl7O0BJntqagR050kkOBuY4o=",
+			"path": "golang.org/x/net/websocket",
+			"revision": "f841c39de738b1d0df95b5a7187744f0e03d8112",
+			"revisionTime": "2016-06-30T00:53:42Z"
+		},
+		{
 			"checksumSHA1": "4Uk+x7cdGZHjmEAnM56/L//5QlM=",
 			"path": "hub.jazz.net/git/ansi/MS-FE",
 			"revision": "e52f5aefd39222dddccf82f4f3210cd52a4d4735",
