@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	clog "github.com/morriswinkler/cloudglog"
 	"hub.jazz.net/git/ansi/MS-FE/recipe"
 	"hub.jazz.net/git/ansi/MS-FE/sensor"
@@ -37,6 +35,6 @@ func main() {
 	go s.Run()
 	go gatekeeper.Run()
 
-	time.Sleep(time.Duration(60) * time.Second)
+	StartHttpServer()
 
 }
