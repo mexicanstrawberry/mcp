@@ -56,10 +56,7 @@ func main() {
 
 	clog.Infoln("init mexicanstrawberry")
 
-	eventChannel := make(chan interface{})
-
 	gatekeeper.MqttData.Dial()
-	gatekeeper.MqttData.SetChannel(eventChannel)
 
 	//i := 0
 	//for _ = range time.Tick(time.Duration(1) * time.Second) {
@@ -89,7 +86,7 @@ func main() {
 	go s.Run(ctl)
 
 	for {
-		l := <-eventChannel
+		l := <-events.Channel
 		clog.Info("===================================")
 		switch e := l.(type) {
 		case events.MqttRecive:

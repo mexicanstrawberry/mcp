@@ -12,7 +12,7 @@ var priorityMap = map[Priority]string{
 	P_MIN:  "Lowest priority",
 }
 
-var Channel *Event
+var Channel = make(chan interface{})
 
 type Event chan interface{}
 

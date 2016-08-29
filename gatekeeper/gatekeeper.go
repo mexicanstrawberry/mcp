@@ -20,7 +20,7 @@ func (p *mqttDataT) Dial() error {
 		return token.Error()
 	}
 
-	p.Client.Subscribe("iot-2/type/RPi/id/Plant1/evt/+/fmt/json", 0, p.MessageHandler())
+	p.Client.Subscribe("iot-2/type/RPi/id/Plant1/evt/+/fmt/json", 0, MessageHandler)
 
 	return nil
 }
@@ -31,25 +31,19 @@ func (m *mqttDataT) SetChannel(c chan interface{}) {
 	m.Channel = c
 }
 
-func (p *mqttDataT) MessageHandler() func(client mqtt.Client, msg mqtt.Message) {
+var MessageHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 
-	var m mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
+	var a interface{}
 
-		var a interface{}
+	json.Unmarshal(msg.Payload(), &a)
 
-		json.Unmarshal(msg.Payload(), &a)
+	for _, v := range a.(map[string]interface{}) {
+		//clog.Info("<==============================")
 
-		for _, v := range a.(map[string]interface{}) {
-			//clog.Info("<==============================")
-
-			p.Channel <- events.MqttRecive{
-				Map: v.(map[string]interface{}),
-			}
+		events.Channel <- events.MqttRecive{
+			Map: v.(map[string]interface{}),
 		}
-
 	}
-
-	return m
 }
 
 func init() {
@@ -57,6 +51,6 @@ func init() {
 	MqttData.Options.SetUsername("a-7mqeaj-8xgxdkgi7y")
 	MqttData.Options.SetPassword("saiwUQG6n2@uwFbC!o")
 	MqttData.Options.AddBroker("tls://7mqeaj.messaging.internetofthings.ibmcloud.com:8883")
-	MqttData.Options.SetDefaultPublishHandler(MqttData.MessageHandler())
+	MqttData.Options.SetDefaultPublishHandler(MessageHandler)
 	MqttData.Client = mqtt.NewClient(&MqttData.Options)
 }
