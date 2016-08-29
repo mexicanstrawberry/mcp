@@ -9,8 +9,8 @@ import (
 
 	"time"
 
-	clog "github.com/morriswinkler/cloudglog"
 	"github.com/eclipse/paho.mqtt.golang"
+	clog "github.com/morriswinkler/cloudglog"
 	"hub.jazz.net/git/ansi/MS-FE/recipe"
 	"hub.jazz.net/git/ansi/MS-FE/sensor"
 )
@@ -47,7 +47,6 @@ var sensorMessage mqtt.MessageHandler = func(clien mqtt.Client, msg mqtt.Message
 		clog.Infoln(v)
 
 	}
-
 }
 
 func main() {
@@ -72,7 +71,7 @@ func main() {
 
 	//mqttClient.Subscribe("iot-2/type/RPi/id/dummyposter/evt/Plant1/fmt/json", 0, f)
 
-	//mqttClient.Subscribe("iot-2/type/RPi/id/Plant1/evt/+/fmt/json", 0, sensorMessage)
+	mqttClient.Subscribe("iot-2/type/RPi/id/Plant1/evt/+/fmt/json", 0, sensorMessage)
 
 	//i := 0
 	//for _ = range time.Tick(time.Duration(1) * time.Second) {
@@ -97,12 +96,12 @@ func main() {
 		clog.Errorln(err)
 	}
 
-	ctl := make(chan int)
+	ctl := make(chan sensor.CtrlChannel)
 
 	go s.Run(ctl)
 
-	time.Sleep(time.Duration(20) * time.Second)
-	ctl <- 1
+	time.Sleep(time.Duration(60) * time.Second)
+	//ctl <- 1
 
 	mqttClient.Disconnect(250)
 

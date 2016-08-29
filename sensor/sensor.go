@@ -24,7 +24,7 @@ type Sensor interface {
 	Set(float64) error
 	Get() error
 	SetRecipe(*recipe.Recipe)
-	Run(<-chan int)
+	Run(<-chan CtrlChannel)
 }
 
 func NewSensor(sensorType string, r *recipe.Recipe) (Sensor, error) {
@@ -40,13 +40,14 @@ func NewSensor(sensorType string, r *recipe.Recipe) (Sensor, error) {
 }
 
 type InsideHumidity struct {
-	SensorName string
-	Recipe     *recipe.Recipe
-	StartTime  time.Time
-	Time       time.Time
-	Value      float64
-	Timer      Timer
-	Ticker     *time.Ticker
+	SensorName   string
+	Recipe       *recipe.Recipe
+	StartTime    time.Time
+	Time         time.Time
+	TargetValue  float64
+	CurrentValue float64
+	Timer        Timer
+	Ticker       *time.Ticker
 }
 
 type Timer struct {
@@ -78,7 +79,7 @@ func (ih *InsideHumidity) SetRecipe(r *recipe.Recipe) {
 	ih.Recipe = r
 }
 
-func (ih *InsideHumidity) Run(ctl <-chan int) {
+func (ih *InsideHumidity) Run(ctl <-chan CtrlChannel) {
 
 	ih.StartTime = time.Now() // use StartTime to calc elapsed time
 	ih.Ticker = time.NewTicker(time.Duration(defaultTickInterval) * time.Second)
@@ -88,11 +89,12 @@ func (ih *InsideHumidity) Run(ctl <-chan int) {
 		select {
 		case t := <-ih.Ticker.C:
 			clog.Infoln("[Ticker] ", t)
+
 		case t := <-ih.Timer.Chan.C:
 			clog.Infoln("[Timer] ", t)
 			ih.Timer = ih.nextOpTime()
 		case i := <-ctl:
-			clog.Infoln("[CTL] ", Ctl(i))
+			clog.Infoln("[CTL] ", i)
 			break
 		}
 	}
@@ -105,7 +107,7 @@ func (ih *InsideHumidity) nextOpTime() Timer {
 	// get elapsed time
 	elapsedTime := time.Since(ih.StartTime)
 
-	// comvert elapsed time into time.Time
+	// convert elapsed time into time.Time
 	nextTime := new(time.Time).Add(elapsedTime)
 
 	// find next operaton and arm time.Timer
@@ -130,7 +132,7 @@ func (ih *InsideHumidity) nextOpTime() Timer {
 	// set func timer
 	t.Func = time.AfterFunc(nextInterval, func() {
 		clog.V(3).Infoln("[nextTimer] fire")
-		ih.Value = nextValue
+		ih.TargetValue = nextValue
 	})
 	// set receiver channel
 	t.Chan = time.NewTimer(nextInterval)

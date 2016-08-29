@@ -1,7 +1,5 @@
 package sensor
 
-type Ctl int
+type CtrlChannel map[string]interface{}
 
-const (
-	STOP Ctl = iota
-)
+const ()
