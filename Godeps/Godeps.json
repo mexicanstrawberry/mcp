@@ -1,5 +1,5 @@
 {
-	"ImportPath": "hub.jazz.net/git/ansi/MS-FE",
+	"ImportPath": "github.com/mexicanstrawberry/mcp",
 	"GoVersion": "go1.6.2",
 	"Deps": []
 }
