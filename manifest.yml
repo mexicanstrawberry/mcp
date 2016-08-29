@@ -3,7 +3,7 @@ applications:
   memory: 128M
   instances: 1
   domain: mybluemix.net
-  name: MS-FE
-  host: MS-FE
+  name: mcp
+  host: mcp
   disk_quota: 1024M
   buildpack: go_buildpack

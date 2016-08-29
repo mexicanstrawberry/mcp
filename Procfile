@@ -1,1 +1,1 @@
-web: MS-FE
+web: mcp
