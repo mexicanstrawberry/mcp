@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/mexicanstrawberry/mcp/recipe"
+	"github.com/mexicanstrawberry/mcp/sensor"
 	clog "github.com/morriswinkler/cloudglog"
-	"hub.jazz.net/git/ansi/MS-FE/recipe"
-	"hub.jazz.net/git/ansi/MS-FE/sensor"
 
-	"hub.jazz.net/git/ansi/MS-FE/gatekeeper"
+	"github.com/mexicanstrawberry/mcp/gatekeeper"
 )
 
 const (

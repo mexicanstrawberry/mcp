@@ -6,9 +6,9 @@ import (
 
 	"fmt"
 
+	"github.com/mexicanstrawberry/mcp/gatekeeper"
+	"github.com/mexicanstrawberry/mcp/recipe"
 	clog "github.com/morriswinkler/cloudglog"
-	"hub.jazz.net/git/ansi/MS-FE/gatekeeper"
-	"hub.jazz.net/git/ansi/MS-FE/recipe"
 )
 
 var SensorType = map[string]Sensor{
