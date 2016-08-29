@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	clog "github.com/morriswinkler/cloudglog"
+	"hub.jazz.net/git/ansi/MS-FE/gatekeeper"
 	"hub.jazz.net/git/ansi/MS-FE/recipe"
 )
 
@@ -24,7 +25,7 @@ type Sensor interface {
 	Set(float64) error
 	Get() error
 	SetRecipe(*recipe.Recipe)
-	Run(<-chan CtrlChannel)
+	Run()
 }
 
 func NewSensor(sensorType string, r *recipe.Recipe) (Sensor, error) {
@@ -79,7 +80,21 @@ func (ih *InsideHumidity) SetRecipe(r *recipe.Recipe) {
 	ih.Recipe = r
 }
 
-func (ih *InsideHumidity) Run(ctl <-chan CtrlChannel) {
+func (ih *InsideHumidity) regulate() {
+	if value, exist := gatekeeper.CurrentData[ih.SensorName]; exist {
+		// TODO: for nill
+		offset := ih.TargetValue - value.(float64)
+		clog.Info(offset)
+		if offset > 0 {
+			// TODO: Do crazy math
+		} else {
+
+		}
+	}
+
+}
+
+func (ih *InsideHumidity) Run() {
 
 	ih.StartTime = time.Now() // use StartTime to calc elapsed time
 	ih.Ticker = time.NewTicker(time.Duration(defaultTickInterval) * time.Second)
@@ -89,13 +104,12 @@ func (ih *InsideHumidity) Run(ctl <-chan CtrlChannel) {
 		select {
 		case t := <-ih.Ticker.C:
 			clog.Infoln("[Ticker] ", t)
+			ih.regulate()
 
 		case t := <-ih.Timer.Chan.C:
 			clog.Infoln("[Timer] ", t)
 			ih.Timer = ih.nextOpTime()
-		case i := <-ctl:
-			clog.Infoln("[CTL] ", i)
-			break
+
 		}
 	}
 }

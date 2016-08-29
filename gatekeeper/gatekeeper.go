@@ -1,11 +1,19 @@
 package gatekeeper
 
 import (
-	"github.com/eclipse/paho.mqtt.golang"
-	//clog "github.com/morriswinkler/cloudglog"
 	"encoding/json"
 
-	"hub.jazz.net/git/ansi/MS-FE/events"
+	"github.com/eclipse/paho.mqtt.golang"
+	clog "github.com/morriswinkler/cloudglog"
+
+	"log"
+	"os"
+
+	"time"
+)
+
+const (
+	DEBUG = false
 )
 
 type mqttDataT struct {
@@ -13,6 +21,8 @@ type mqttDataT struct {
 	Client  mqtt.Client
 	Channel chan interface{}
 }
+
+var CurrentData map[string]interface{}
 
 func (p *mqttDataT) Dial() error {
 
@@ -38,15 +48,20 @@ var MessageHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Messa
 	json.Unmarshal(msg.Payload(), &a)
 
 	for _, v := range a.(map[string]interface{}) {
-		//clog.Info("<==============================")
-
-		events.Channel <- events.MqttRecive{
-			Map: v.(map[string]interface{}),
-		}
+		// TODO: UPdate map instead of overwrite
+		CurrentData = v.(map[string]interface{})
 	}
 }
 
 func init() {
+
+	if DEBUG {
+		mqtt.ERROR = log.New(os.Stdout, "ERROR: ", 0)
+		mqtt.CRITICAL = log.New(os.Stdout, "CRITCIAL: ", 0)
+		mqtt.WARN = log.New(os.Stdout, "WARN: ", 0)
+		mqtt.DEBUG = log.New(os.Stdout, "DEBUG: ", 0)
+	}
+
 	MqttData.Options.SetClientID("a:7mqeaj:8xgxdkgi7y")
 	MqttData.Options.SetUsername("a-7mqeaj-8xgxdkgi7y")
 	MqttData.Options.SetPassword("saiwUQG6n2@uwFbC!o")
@@ -54,3 +69,27 @@ func init() {
 	MqttData.Options.SetDefaultPublishHandler(MessageHandler)
 	MqttData.Client = mqtt.NewClient(&MqttData.Options)
 }
+
+func Run() {
+
+	for {
+		select {
+		case <-time.After(10 * time.Second):
+			clog.Info("Gatekeeper JOB")
+		}
+	}
+
+}
+
+//i := 0
+//for _ = range time.Tick(time.Duration(1) * time.Second) {
+//	if i == 100 {
+//		break
+//	}
+//
+//	text := fmt.Sprintf("\"d\":{ msg %d}", i)
+//	mqttClient.Publish("iot-2/type/RPi/id/dummyposter/evt/Plant2/fmt/json", 0, false, text)
+//	i++
+//}
+
+//clog.LogLevel = 0

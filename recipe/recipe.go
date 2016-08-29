@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"fmt"
+	"math/rand"
 )
 
 var RecipeFormat = map[string]Operation{
@@ -67,9 +68,10 @@ func (so *SimpleOperation) Init() {
 // create some dumy data for testing
 func (so *SimpleOperation) LoadDummyRecipe() {
 
-	amount := 10
-	interval := 1
+	amount := 100
+	interval := 30
 	so.Sensors = make(map[string][]OpTable)
+	rand.Seed(time.Now().UTC().UnixNano())
 
 	for i := 0; i < amount; i++ {
 
@@ -77,7 +79,7 @@ func (so *SimpleOperation) LoadDummyRecipe() {
 
 		t := new(time.Time)
 		opT.Time = t.Add(time.Duration(i*interval) * time.Second)
-		opT.Value = float64(i)
+		opT.Value = rand.Float64() * 100
 
 		so.Sensors["InsideHumidity"] = append(so.Sensors["InsideHumidity"], opT)
 	}
