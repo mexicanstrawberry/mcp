@@ -3,7 +3,7 @@ applications:
   memory: 128M
   instances: 1
   domain: mybluemix.net
-  name: mcp
-  host: mcp
+  name: msmcp
+  host: mcmcp
   disk_quota: 1024M
-  buildpack: go_buildpack
+  buildpack: https://github.com/cloudfoundry/go-buildpack
