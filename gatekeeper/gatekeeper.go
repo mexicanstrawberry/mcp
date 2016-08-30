@@ -62,9 +62,9 @@ func init() {
 		mqtt.DEBUG = log.New(os.Stdout, "DEBUG: ", 0)
 	}
 
-	MqttData.Options.SetClientID("a:7mqeaj:8xgxdkgi7y")
-	MqttData.Options.SetUsername("a-7mqeaj-8xgxdkgi7y")
-	MqttData.Options.SetPassword("saiwUQG6n2@uwFbC!o")
+	MqttData.Options.SetClientID("a:7mqeaj:dxczjv6qsw")
+	MqttData.Options.SetUsername("a-7mqeaj-dxczjv6qsw")
+	MqttData.Options.SetPassword("ysXxLYoF)cNB*zy5N+")
 	MqttData.Options.AddBroker("tls://7mqeaj.messaging.internetofthings.ibmcloud.com:8883")
 	MqttData.Options.SetDefaultPublishHandler(MessageHandler)
 	MqttData.Client = mqtt.NewClient(&MqttData.Options)
