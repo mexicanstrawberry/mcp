@@ -82,24 +82,71 @@ func (ih *InsideHumidity) SetRecipe(r *recipe.Recipe) {
 }
 
 func (ih *InsideHumidity) regulate() {
-	if value, exist := gatekeeper.CurrentData[ih.SensorName]; exist {
-		// TODO: for nill
-		offset := ih.TargetValue - value.(float64)
-		//clog.Info("[InsideHumidity] ", offset)
-
-		s := events.MqttCommand{
-			CommandID: 1,
-			Actuator:  "33",
-			Value:     3.3,
-			Priority:  events.Priority(events.P_NORM),
+	if insideHumidity, exist := gatekeeper.CurrentData[ih.SensorName]; exist {
+		if insideHumidity == nil {
+			return
+		}
+		offsetTargetInside := ih.TargetValue - insideHumidity.(float64)
+		offsetOutsideInside := 0.0
+		if outsideHumidity, exist := gatekeeper.CurrentData["OutsideHumidity"]; exist {
+			if outsideHumidity != nil {
+				offsetOutsideInside = outsideHumidity.(float64) - insideHumidity.(float64)
+			}
 		}
 
-		events.Channel <- s
-
-		if offset > 0 {
-			// TODO: Do crazy math
-		} else {
-
+		// To dry and outside as more humidity
+		if offsetTargetInside > 5 && offsetOutsideInside > 0 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Hatch",
+				Value:     0,
+				Priority:  events.Priority(events.P_MIN),
+			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "OutsideFan",
+				Value:     5,
+				Priority:  events.Priority(events.P_NORM),
+			}
+		}
+		// Much to dry
+		if offsetTargetInside > 10 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Humidifier",
+				Value:     5,
+				Priority:  events.Priority(events.P_NORM),
+			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "InsideFan",
+				Value:     7,
+				Priority:  events.Priority(events.P_NORM),
+			}
+		}
+		// To much humidity
+		if offsetTargetInside < -5 && offsetOutsideInside < 0 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Hatch",
+				Value:     1,
+				Priority:  events.Priority(events.P_MIN),
+			}
+		}
+		// Much to much humidity
+		if offsetTargetInside < -10 && offsetOutsideInside < 0 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Hatch",
+				Value:     1,
+				Priority:  events.Priority(events.P_MIN),
+			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "OutsideFan",
+				Value:     7,
+				Priority:  events.Priority(events.P_NORM),
+			}
 		}
 	}
 
