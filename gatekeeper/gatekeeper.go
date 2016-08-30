@@ -41,13 +41,6 @@ func (p *mqttDataT) Dial() error {
 	return nil
 }
 
-func (p *mqttDataT) Send(string) error {
-
-	//p.Publish("iot-2/type/RPi/id/Plant/evt/Plant2/fmt/json", 0, false, text)
-
-	return nil
-}
-
 var MqttData mqttDataT
 
 func (m *mqttDataT) SetChannel(c chan interface{}) {
@@ -105,7 +98,12 @@ func Run() {
 		case <-myTicker.C:
 			clog.Info("Gatekeeper JOB")
 
-			//text := fmt.Sprintf("\"d\":{ msg %d}", i)
+			for _, command := range CurrentCommands {
+				text := fmt.Sprintf("\"d\":{ \"%s\": %f}", command.Actuator, command.Value)
+				clog.Info(text)
+				//MqttData.Client.Publish()
+				//Publish("iot-2/type/RPi/id/Plant/evt/Plant2/fmt/json", 0, false, text)
+			}
 
 			CurrentCommands = make([]events.MqttCommand, 0)
 
