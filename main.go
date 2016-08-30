@@ -20,7 +20,10 @@ func main() {
 
 	clog.Infoln("init mexicanstrawberry")
 
-	gatekeeper.MqttData.Dial()
+	err := gatekeeper.MqttData.Dial()
+	if err != nil {
+		clog.Errorln("[mqtt] ", err)
+	}
 
 	r, err := recipe.NewRecipe("SimpleRecipe", true)
 	if err != nil {
