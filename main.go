@@ -25,17 +25,17 @@ func main() {
 		clog.Errorln("[mqtt] ", err)
 	}
 
-	r, err := recipe.NewRecipe("SimpleRecipe", true)
+	myRecipe, err := recipe.NewRecipe("SimpleRecipe", true)
 	if err != nil {
 		clog.Errorln(err)
 	}
 
-	s, err := sensor.NewSensor("InsideHumidity", r)
+	insideHumidity, err := sensor.NewSensor("InsideHumidity", myRecipe)
 	if err != nil {
 		clog.Errorln(err)
 	}
 
-	go s.Run()
+	go insideHumidity.Run()
 	go gatekeeper.Run()
 
 	web.StartHttpServer()
