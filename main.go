@@ -22,7 +22,10 @@ func main() {
 
 	appEnv, _ := cfenv.Current()
 
-	clog.Info(appEnv.Services)
+	//clog.Info(appEnv.Services)
+	service, _ := appEnv.Services.WithName("MS-IoT")
+
+	clog.Info(service.Credentials)
 
 	err := gatekeeper.MqttData.Dial()
 	if err != nil {
