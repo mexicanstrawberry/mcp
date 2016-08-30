@@ -16,7 +16,7 @@ var Channel = make(chan interface{})
 
 type Event chan interface{}
 
-type MqttRecive struct {
+type MattReceive struct {
 	Map map[string]interface{}
 }
 
