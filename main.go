@@ -4,7 +4,7 @@ import (
 	"github.com/mexicanstrawberry/mcp/recipe"
 	"github.com/mexicanstrawberry/mcp/sensor"
 	clog "github.com/morriswinkler/cloudglog"
-
+        "github.com/cloudfoundry-community/go-cfenv"
 	"github.com/mexicanstrawberry/mcp/gatekeeper"
 )
 
@@ -19,6 +19,10 @@ func init() {
 func main() {
 
 	clog.Infoln("init mexicanstrawberry")
+
+	appEnv, _ := cfenv.Current()
+
+	clog.Info(appEnv.Services)
 
 	err := gatekeeper.MqttData.Dial()
 	if err != nil {
