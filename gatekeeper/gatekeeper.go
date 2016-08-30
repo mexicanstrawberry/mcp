@@ -76,7 +76,7 @@ func init() {
 	}
 
 	id := strings.Replace(service.Credentials["apiKey"].(string), "-", ":", -1)
-	broker := fmt.Sprintf("tls://%s:%f", service.Credentials["mqtt_host"].(string), service.Credentials["mqtt_s_port"].(float64))
+	broker := fmt.Sprintf("tls://%s:%4.0f", service.Credentials["mqtt_host"].(string), service.Credentials["mqtt_s_port"].(float64))
 	MqttData.Options.SetClientID(id)
 	MqttData.Options.SetUsername(service.Credentials["apiKey"].(string))
 	MqttData.Options.SetPassword(service.Credentials["apiToken"].(string))
