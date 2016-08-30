@@ -6,6 +6,7 @@ import (
 
 	"fmt"
 
+	"github.com/mexicanstrawberry/mcp/events"
 	"github.com/mexicanstrawberry/mcp/gatekeeper"
 	"github.com/mexicanstrawberry/mcp/recipe"
 	clog "github.com/morriswinkler/cloudglog"
@@ -16,7 +17,7 @@ var SensorType = map[string]Sensor{
 }
 
 const (
-	defaultTickInterval = 10
+	defaultTickInterval = 2
 )
 
 type Sensor interface {
@@ -84,7 +85,17 @@ func (ih *InsideHumidity) regulate() {
 	if value, exist := gatekeeper.CurrentData[ih.SensorName]; exist {
 		// TODO: for nill
 		offset := ih.TargetValue - value.(float64)
-		clog.Info("[InsideHumidity] ", offset)
+		//clog.Info("[InsideHumidity] ", offset)
+
+		s := events.MqttCommand{
+			CommandID: 1,
+			Actuator:  "33",
+			Value:     3.3,
+			Priority:  events.Priority(events.P_NORM),
+		}
+
+		events.Channel <- s
+
 		if offset > 0 {
 			// TODO: Do crazy math
 		} else {
