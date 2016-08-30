@@ -84,7 +84,7 @@ func (ih *InsideHumidity) regulate() {
 	if value, exist := gatekeeper.CurrentData[ih.SensorName]; exist {
 		// TODO: for nill
 		offset := ih.TargetValue - value.(float64)
-		clog.Info(offset)
+		clog.Info("[InsideHumidity] ", offset)
 		if offset > 0 {
 			// TODO: Do crazy math
 		} else {
