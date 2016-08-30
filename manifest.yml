@@ -7,4 +7,7 @@ applications:
   host: mcp
   disk_quota: 1024M
   buildpack: https://github.com/cloudfoundry/binary-buildpack
+  services:
+  - MS-IoT
+  - MS-Storage
 
