@@ -97,14 +97,13 @@ func Run() {
 
 		case <-myTicker.C:
 			clog.Info("Gatekeeper JOB")
-
 			for _, command := range CurrentCommands {
-				text := fmt.Sprintf("\"d\":{ \"%s\": %f}", command.Actuator, command.Value)
-				clog.Info(text)
-				//MqttData.Client.Publish()
-				//Publish("iot-2/type/RPi/id/Plant/evt/Plant2/fmt/json", 0, false, text)
+				channel := fmt.Sprintf("iot-2/type/RPi/id/Plant1/cmd/%s/fmt/json", command.Actuator)
+				payload := fmt.Sprintf("{\"d\":{ \"value\": %f}}", command.Value)
+				clog.Info(channel)
+				clog.Info(payload)
+				//MqttData.Client.Publish(channel, 0, false, payload)
 			}
-
 			CurrentCommands = make([]events.MqttCommand, 0)
 
 		case i := <-events.Channel:
