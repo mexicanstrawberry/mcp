@@ -12,6 +12,7 @@ import (
 
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/eclipse/paho.mqtt.golang"
+	"github.com/mexicanstrawberry/mcp/events"
 	clog "github.com/morriswinkler/cloudglog"
 )
 
@@ -27,6 +28,8 @@ type mqttDataT struct {
 
 var CurrentData map[string]interface{}
 
+var CurrentCommands = make([]events.MqttCommand, 0)
+
 func (p *mqttDataT) Dial() error {
 
 	if token := p.Client.Connect(); token.Wait() && token.Error() != nil {
@@ -34,6 +37,13 @@ func (p *mqttDataT) Dial() error {
 	}
 
 	p.Client.Subscribe("iot-2/type/RPi/id/Plant1/evt/+/fmt/json", 0, MessageHandler)
+
+	return nil
+}
+
+func (p *mqttDataT) Send(string) error {
+
+	//p.Publish("iot-2/type/RPi/id/Plant/evt/Plant2/fmt/json", 0, false, text)
 
 	return nil
 }
@@ -87,24 +97,40 @@ func init() {
 
 func Run() {
 
+	myTicker := time.NewTicker(time.Duration(10) * time.Second)
+
 	for {
 		select {
-		case <-time.After(10 * time.Second):
+
+		case <-myTicker.C:
 			clog.Info("Gatekeeper JOB")
+
+			//text := fmt.Sprintf("\"d\":{ msg %d}", i)
+
+			CurrentCommands = make([]events.MqttCommand, 0)
+
+		case i := <-events.Channel:
+			switch i.(type) {
+			case events.MqttCommand:
+				newCommand := i.(events.MqttCommand)
+				match := false
+
+				for i := range CurrentCommands {
+					oldCommand := CurrentCommands[i]
+					if newCommand.Actuator == oldCommand.Actuator {
+						match = true
+						if newCommand.Priority < oldCommand.Priority {
+							CurrentCommands[i] = newCommand
+						}
+					}
+				}
+
+				if !match {
+					CurrentCommands = append(CurrentCommands, newCommand)
+				}
+
+			}
 		}
 	}
 
 }
-
-//i := 0
-//for _ = range time.Tick(time.Duration(1) * time.Second) {
-//	if i == 100 {
-//		break
-//	}
-//
-//	text := fmt.Sprintf("\"d\":{ msg %d}", i)
-//	mqttClient.Publish("iot-2/type/RPi/id/dummyposter/evt/Plant2/fmt/json", 0, false, text)
-//	i++
-//}
-
-//clog.LogLevel = 0
