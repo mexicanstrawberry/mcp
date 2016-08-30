@@ -35,8 +35,14 @@ func main() {
 		clog.Errorln(err)
 	}
 
-	go insideHumidity.Run()
+	insideTemperature, err := sensor.NewSensor("InsideTemperature", myRecipe)
+	if err != nil {
+		clog.Errorln(err)
+	}
+
 	go gatekeeper.Run()
+	go insideHumidity.Run()
+	go insideTemperature.Run()
 
 	web.StartHttpServer()
 

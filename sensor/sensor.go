@@ -10,7 +10,8 @@ import (
 )
 
 var SensorType = map[string]Sensor{
-	"InsideHumidity": new(InsideHumidity),
+	"InsideHumidity":    new(InsideHumidity),
+	"InsideTemperature": new(InsideTemperature),
 }
 
 const (
