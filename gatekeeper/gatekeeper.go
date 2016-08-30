@@ -2,14 +2,15 @@ package gatekeeper
 
 import (
 	"encoding/json"
-
-	"github.com/eclipse/paho.mqtt.golang"
-	clog "github.com/morriswinkler/cloudglog"
-
 	"log"
 	"os"
-
 	"time"
+
+	"strings"
+
+	"github.com/cloudfoundry-community/go-cfenv"
+	"github.com/eclipse/paho.mqtt.golang"
+	clog "github.com/morriswinkler/cloudglog"
 )
 
 const (
@@ -62,10 +63,24 @@ func init() {
 		mqtt.DEBUG = log.New(os.Stdout, "DEBUG: ", 0)
 	}
 
-	MqttData.Options.SetClientID("a:7mqeaj:dxczjv6qsw")
-	MqttData.Options.SetUsername("a-7mqeaj-dxczjv6qsw")
-	MqttData.Options.SetPassword("ysXxLYoF)cNB*zy5N+")
-	MqttData.Options.AddBroker("tls://7mqeaj.messaging.internetofthings.ibmcloud.com:8883")
+	appEnv, _ := cfenv.Current()
+
+	//clog.Info(appEnv.Services)
+	service, _ := appEnv.Services.WithName("MS-IoT")
+
+	clog.Info(service.Credentials)
+
+	//	MqttData.Options.SetClientID("a:7mqeaj:dxczjv6qsw")
+	//	MqttData.Options.SetUsername("a-7mqeaj-dxczjv6qsw")
+	//	MqttData.Options.SetPassword("ysXxLYoF)cNB*zy5N+")
+	//	MqttData.Options.AddBroker("tls://7mqeaj.messaging.internetofthings.ibmcloud.com:8883")
+
+	id := strings.Replace(service.Credentials["apiKey"].(string), "-", ":", -1)
+
+	MqttData.Options.SetClientID(id)
+	MqttData.Options.SetUsername(service.Credentials["apiKey"].(string))
+	MqttData.Options.SetPassword(service.Credentials["apiToken"].(string))
+	MqttData.Options.AddBroker("tls://" + service.Credentials["mqtt_host"].(string) + ":" + service.Credentials["mqtt_s_port"].(string))
 	MqttData.Options.SetDefaultPublishHandler(MessageHandler)
 	MqttData.Client = mqtt.NewClient(&MqttData.Options)
 }

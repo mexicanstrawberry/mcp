@@ -1,11 +1,10 @@
 package main
 
 import (
+	"github.com/mexicanstrawberry/mcp/gatekeeper"
 	"github.com/mexicanstrawberry/mcp/recipe"
 	"github.com/mexicanstrawberry/mcp/sensor"
 	clog "github.com/morriswinkler/cloudglog"
-        "github.com/cloudfoundry-community/go-cfenv"
-	"github.com/mexicanstrawberry/mcp/gatekeeper"
 )
 
 const (
@@ -19,13 +18,6 @@ func init() {
 func main() {
 
 	clog.Infoln("init mexicanstrawberry")
-
-	appEnv, _ := cfenv.Current()
-
-	//clog.Info(appEnv.Services)
-	service, _ := appEnv.Services.WithName("MS-IoT")
-
-	clog.Info(service.Credentials)
 
 	err := gatekeeper.MqttData.Dial()
 	if err != nil {
