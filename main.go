@@ -4,6 +4,7 @@ import (
 	"github.com/mexicanstrawberry/mcp/gatekeeper"
 	"github.com/mexicanstrawberry/mcp/recipe"
 	"github.com/mexicanstrawberry/mcp/sensor"
+	"github.com/mexicanstrawberry/mcp/web"
 	clog "github.com/morriswinkler/cloudglog"
 )
 
@@ -37,6 +38,6 @@ func main() {
 	go s.Run()
 	go gatekeeper.Run()
 
-	StartHttpServer()
+	web.StartHttpServer()
 
 }
