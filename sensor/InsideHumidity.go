@@ -39,8 +39,10 @@ func (ih *InsideHumidity) regulate() {
 		if insideHumidity == nil {
 			return
 		}
+
 		offsetTargetInside := ih.TargetValue - insideHumidity.(float64)
 		offsetOutsideInside := 0.0
+
 		if outsideHumidity, exist := gatekeeper.CurrentData["OutsideHumidity"]; exist {
 			if outsideHumidity != nil {
 				offsetOutsideInside = outsideHumidity.(float64) - insideHumidity.(float64)
@@ -75,6 +77,12 @@ func (ih *InsideHumidity) regulate() {
 				Actuator:  "InsideFan",
 				Value:     7,
 				Priority:  events.Priority(events.P_NORM),
+			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Hatch",
+				Value:     1,
+				Priority:  events.Priority(events.P_MIN),
 			}
 		}
 		// To much humidity
