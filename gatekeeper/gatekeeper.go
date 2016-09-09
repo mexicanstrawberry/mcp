@@ -99,7 +99,7 @@ func Run() {
 			clog.Info("Gatekeeper JOB")
 			for _, command := range CurrentCommands {
 				channel := fmt.Sprintf("iot-2/type/RPi/id/Plant1/cmd/%s/fmt/json", command.Actuator)
-				payload := command.Value //fmt.Sprintf("{\"d\":{ \"value\": %f}}", command.Value)
+				payload := fmt.Sprintf("{\"d\":{ \"value\": %f}}", command.Value)
 				clog.Info(channel)
 				clog.Info(payload)
 				MqttData.Client.Publish(channel, 0, false, payload)
