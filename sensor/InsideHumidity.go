@@ -49,12 +49,12 @@ func (ih *InsideHumidity) regulate() {
 			}
 		}
 
-		// To dry and outside as more humidity
+		// To dry and outside as more humidity open hatch activate fan
 		if offsetTargetInside > 5 && offsetOutsideInside > 0 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
-				Value:     0,
+				Value:     0, // open
 				Priority:  events.Priority(events.P_MIN),
 			}
 			events.Channel <- events.MqttCommand{
@@ -64,7 +64,7 @@ func (ih *InsideHumidity) regulate() {
 				Priority:  events.Priority(events.P_NORM),
 			}
 		}
-		// Much to dry
+		// Much to dry close hatch and humidify
 		if offsetTargetInside > 10 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
@@ -81,25 +81,25 @@ func (ih *InsideHumidity) regulate() {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
-				Value:     1,
-				Priority:  events.Priority(events.P_MIN),
+				Value:     1, // close
+				Priority:  events.Priority(events.P_NORM),
 			}
 		}
-		// To much humidity
+		// To much humidity open the hatch
 		if offsetTargetInside < -5 && offsetOutsideInside < 0 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
-				Value:     1,
+				Value:     0, // open
 				Priority:  events.Priority(events.P_MIN),
 			}
 		}
-		// Much to much humidity
+		// Much to much humidity open the hatch and use the fan
 		if offsetTargetInside < -10 && offsetOutsideInside < 0 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
-				Value:     1,
+				Value:     0, // open
 				Priority:  events.Priority(events.P_MIN),
 			}
 			events.Channel <- events.MqttCommand{
