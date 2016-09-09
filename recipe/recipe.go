@@ -79,7 +79,7 @@ func (so *SimpleOperation) LoadDummyRecipe() {
 
 		t := new(time.Time)
 		opT.Time = t.Add(time.Duration(i*interval) * time.Second)
-		opT.Value = 60 //rand.Float64() * 100
+		opT.Value = 55 //rand.Float64() * 100
 
 		so.Sensors["InsideHumidity"] = append(so.Sensors["InsideHumidity"], opT)
 	}
