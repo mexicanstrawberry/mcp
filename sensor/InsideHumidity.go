@@ -7,6 +7,8 @@ import (
 	"github.com/mexicanstrawberry/mcp/gatekeeper"
 	"github.com/mexicanstrawberry/mcp/recipe"
 
+	"math"
+
 	clog "github.com/morriswinkler/cloudglog"
 )
 
@@ -40,17 +42,17 @@ func (ih *InsideHumidity) regulate() {
 			return
 		}
 
-		offsetTargetInside := ih.TargetValue - insideHumidity.(float64)
-		offsetOutsideInside := 0.0
+		toDryTowardsTarget := ih.TargetValue - insideHumidity.(float64)
+		outsideCompatedToInside := 0.0
 
 		if outsideHumidity, exist := gatekeeper.CurrentData["OutsideHumidity"]; exist {
 			if outsideHumidity != nil {
-				offsetOutsideInside = outsideHumidity.(float64) - insideHumidity.(float64)
+				outsideCompatedToInside = outsideHumidity.(float64) - insideHumidity.(float64)
 			}
 		}
 
-		// To dry and outside as more humidity open hatch and activate fan
-		if offsetTargetInside > 1 && offsetOutsideInside > 0 {
+		// To dry and outside as more humidity: open hatch and activate fan
+		if toDryTowardsTarget > 1 && outsideCompatedToInside > 0 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
@@ -65,7 +67,7 @@ func (ih *InsideHumidity) regulate() {
 			}
 		}
 		// To dry and outside as less humidity close hatch and activate humidifier
-		if offsetTargetInside > 1 && offsetOutsideInside <= 0 {
+		if toDryTowardsTarget > 1 && outsideCompatedToInside <= 0 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Humidifier",
@@ -86,7 +88,7 @@ func (ih *InsideHumidity) regulate() {
 			}
 		}
 		// To much humidity and outside drier open the hatch
-		if offsetTargetInside < -1 && offsetOutsideInside < 0 {
+		if toDryTowardsTarget < -1 && outsideCompatedToInside < 0 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
@@ -95,7 +97,7 @@ func (ih *InsideHumidity) regulate() {
 			}
 		}
 		// Much to much humidity and outside drier open the hatch and use the fan
-		if offsetTargetInside < -5 && offsetOutsideInside < 0 {
+		if toDryTowardsTarget < -5 && outsideCompatedToInside < 0 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
@@ -107,6 +109,14 @@ func (ih *InsideHumidity) regulate() {
 				Actuator:  "OutsideFan",
 				Value:     7,
 				Priority:  events.Priority(events.P_NORM),
+			}
+		}
+		if math.Abs(toDryTowardsTarget) < 1 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Hatch",
+				Value:     0, // close
+				Priority:  events.Priority(events.P_MIN),
 			}
 		}
 	}
