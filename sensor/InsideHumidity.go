@@ -33,7 +33,9 @@ func (ih *InsideHumidity) SetRecipe(r *recipe.Recipe) {
 }
 
 func (ih *InsideHumidity) regulate() {
+
 	if insideHumidity, exist := gatekeeper.CurrentData[ih.SensorName]; exist {
+
 		if insideHumidity == nil {
 			return
 		}

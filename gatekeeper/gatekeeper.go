@@ -102,7 +102,7 @@ func Run() {
 				payload := fmt.Sprintf("{\"d\":{ \"value\": %f}}", command.Value)
 				clog.Info(channel)
 				clog.Info(payload)
-				//MqttData.Client.Publish(channel, 0, false, payload)
+				MqttData.Client.Publish(channel, 0, false, payload)
 			}
 			CurrentCommands = make([]events.MqttCommand, 0)
 
