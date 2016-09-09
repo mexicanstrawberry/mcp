@@ -7,6 +7,8 @@ import (
 
 	"fmt"
 	"math/rand"
+
+	clog "github.com/morriswinkler/cloudglog"
 )
 
 var RecipeFormat = map[string]Operation{
@@ -79,13 +81,14 @@ func (so *SimpleOperation) LoadDummyRecipe() {
 
 		t := new(time.Time)
 		opT.Time = t.Add(time.Duration(i*interval) * time.Second)
-		opT.Value = 50 //rand.Float64() * 100
+		opT.Value = 60 //rand.Float64() * 100
 		so.Sensors["InsideHumidity"] = append(so.Sensors["InsideHumidity"], opT)
 
 		opT.Value = 23 //rand.Float64() * 100
 		so.Sensors["InsideTemperature"] = append(so.Sensors["InsideTemperature"], opT)
 
 	}
+	clog.Info(so.Sensors)
 }
 
 func (so *SimpleOperation) LoadRecipe(jsonRecipe []byte) error {
@@ -122,8 +125,14 @@ func (so *SimpleOperation) NextOperation(sensorName string, elapsedTime time.Tim
 
 		for _, v := range sensorMap {
 
-			if !elapsedTime.After(v.Time) {
+			// Because we find the first value before an entry we need to fake
+			// an entry before the first entry
+			dummyTime := new(time.Time).Add(time.Second)
+			if elapsedTime.Before(dummyTime) {
+				return time.Duration(time.Second), v.Value, nil
+			}
 
+			if !elapsedTime.After(v.Time) {
 				// return next time value
 				return v.Time.Sub(elapsedTime), v.Value, nil
 			}

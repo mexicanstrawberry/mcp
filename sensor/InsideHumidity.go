@@ -52,7 +52,7 @@ func (ih *InsideHumidity) regulate() {
 		}
 
 		// To dry and outside as more humidity: open hatch and activate fan
-		if toDryTowardsTarget > 1 && outsideCompatedToInside > 0 {
+		if toDryTowardsTarget > 1 && outsideCompatedToInside > 5 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
@@ -65,25 +65,31 @@ func (ih *InsideHumidity) regulate() {
 				Value:     11,
 				Priority:  events.Priority(events.P_NORM),
 			}
-		}
-		// To dry and outside as less humidity close hatch and activate humidifier
-		if toDryTowardsTarget > 1 && outsideCompatedToInside <= 0 {
-			events.Channel <- events.MqttCommand{
-				CommandID: 1,
-				Actuator:  "Humidifier",
-				Value:     5,
-				Priority:  events.Priority(events.P_NORM),
-			}
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "InsideFan",
-				Value:     8,
+				Value:     11,
+				Priority:  events.Priority(events.P_NORM),
+			}
+		}
+		// To dry and outside as less humidity close hatch and activate humidifier
+		if toDryTowardsTarget > 1 && outsideCompatedToInside <= 5 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Humidifier",
+				Value:     3,
 				Priority:  events.Priority(events.P_NORM),
 			}
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
 				Value:     0, // close
+				Priority:  events.Priority(events.P_NORM),
+			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "InsideFan",
+				Value:     2,
 				Priority:  events.Priority(events.P_NORM),
 			}
 		}
@@ -97,7 +103,7 @@ func (ih *InsideHumidity) regulate() {
 			}
 		}
 		// Much to much humidity and outside drier open the hatch and use the fan
-		if toDryTowardsTarget < -5 && outsideCompatedToInside < 0 {
+		if toDryTowardsTarget < -5 && outsideCompatedToInside < 3 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
@@ -134,18 +140,15 @@ func (ih *InsideHumidity) Run() {
 	ih.StartTime = time.Now() // use StartTime to calc elapsed time
 	ih.Ticker = time.NewTicker(time.Duration(defaultTickInterval) * time.Second)
 	ih.Timer = ih.nextOpTime()
-
 	for {
-		//	select {
-		//	case t := <-ih.Ticker.C:
-		//clog.Infoln("[Ticker] ", t)
-		//		ih.regulate()
-
-		//	case t := <-ih.Timer.Chan.C:
-		//clog.Infoln("[Timer] ", t)
-		//		ih.Timer = ih.nextOpTime()
-
-		//	}
+		select {
+		case t := <-ih.Ticker.C:
+			clog.Infoln("[Ticker] ", t)
+			ih.regulate()
+		case t := <-ih.Timer.Chan.C:
+			clog.Infoln("[Timer] ", t)
+			ih.Timer = ih.nextOpTime()
+		}
 	}
 }
 
@@ -159,8 +162,9 @@ func (ih *InsideHumidity) nextOpTime() Timer {
 	// convert elapsed time into time.Time
 	nextTime := new(time.Time).Add(elapsedTime)
 
-	// find next operaton and arm time.Timer
+	// find next operation and arm time.Timer
 	nextInterval, nextValue, err := ih.Recipe.Operation.NextOperation(ih.Name(), nextTime)
+
 	if err != nil {
 		switch err {
 		case recipe.E_NO_NEXT_OPERATION:
@@ -177,12 +181,14 @@ func (ih *InsideHumidity) nextOpTime() Timer {
 	}
 
 	clog.V(3).Infoln("[nextTimer] ", nextInterval)
+	clog.V(3).Infoln("[nextValue] ", nextValue)
 
 	// set func timer
 	t.Func = time.AfterFunc(nextInterval, func() {
-		clog.V(3).Infof("[nextTimer] fire value: %f \n", nextValue)
+		clog.V(3).Infof("[nextTimer] fire time %s value: %f \n", nextInterval, nextValue)
 		ih.TargetValue = nextValue
 	})
+
 	// set receiver channel
 	t.Chan = time.NewTimer(nextInterval)
 
