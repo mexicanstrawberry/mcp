@@ -110,6 +110,12 @@ func (ih *InsideHumidity) regulate() {
 				Value:     7,
 				Priority:  events.Priority(events.P_NORM),
 			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "InsideFan",
+				Value:     8,
+				Priority:  events.Priority(events.P_NORM),
+			}
 		}
 		if math.Abs(toDryTowardsTarget) < 1 {
 			events.Channel <- events.MqttCommand{
