@@ -43,8 +43,8 @@ func (ih *InsideTemperature) regulate() {
 				offsetOutsideInside = outsideTemperature.(float64) - insideTemperature.(float64)
 			}
 		}
-		clog.Info(offsetTargetInside)
-		clog.Info(offsetOutsideInside)
+		//clog.Info(offsetTargetInside)
+		//clog.Info(offsetOutsideInside)
 	}
 
 }
@@ -58,11 +58,11 @@ func (ih *InsideTemperature) Run() {
 	for {
 		select {
 		case t := <-ih.Ticker.C:
-			clog.Infoln("[Ticker] ", t)
+			//clog.Infoln("[Ticker] ", t)
 			ih.regulate()
 
 		case t := <-ih.Timer.Chan.C:
-			clog.Infoln("[Timer] ", t)
+			//clog.Infoln("[Timer] ", t)
 			ih.Timer = ih.nextOpTime()
 
 		}
