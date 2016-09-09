@@ -54,7 +54,7 @@ func (ih *InsideHumidity) regulate() {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
-				Value:     0, // open
+				Value:     1, // open
 				Priority:  events.Priority(events.P_MIN),
 			}
 			events.Channel <- events.MqttCommand{
@@ -81,7 +81,7 @@ func (ih *InsideHumidity) regulate() {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
-				Value:     1, // close
+				Value:     0, // close
 				Priority:  events.Priority(events.P_NORM),
 			}
 		}
@@ -90,7 +90,7 @@ func (ih *InsideHumidity) regulate() {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
-				Value:     0, // open
+				Value:     1, // open
 				Priority:  events.Priority(events.P_MIN),
 			}
 		}
@@ -99,7 +99,7 @@ func (ih *InsideHumidity) regulate() {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
-				Value:     0, // open
+				Value:     1, // open
 				Priority:  events.Priority(events.P_MIN),
 			}
 			events.Channel <- events.MqttCommand{
