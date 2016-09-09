@@ -103,7 +103,7 @@ func (ih *InsideHumidity) regulate() {
 			}
 		}
 		// Much to much humidity and outside drier open the hatch and use the fan
-		if toDryTowardsTarget < -5 && outsideCompatedToInside < 3 {
+		if toDryTowardsTarget < -2 && outsideCompatedToInside < 3 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
