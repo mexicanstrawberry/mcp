@@ -65,7 +65,7 @@ func (so *SimpleOperation) Init() {
 	so.Sensors = make(map[string][]OpTable)
 }
 
-// create some dumy data for testing
+// create some dummy data for testing
 func (so *SimpleOperation) LoadDummyRecipe() {
 
 	amount := 100
