@@ -69,7 +69,7 @@ func (so *SimpleOperation) Init() {
 func (so *SimpleOperation) LoadDummyRecipe() {
 
 	amount := 100
-	interval := 30
+	interval := 120
 	so.Sensors = make(map[string][]OpTable)
 	rand.Seed(time.Now().UTC().UnixNano())
 
@@ -79,7 +79,7 @@ func (so *SimpleOperation) LoadDummyRecipe() {
 
 		t := new(time.Time)
 		opT.Time = t.Add(time.Duration(i*interval) * time.Second)
-		opT.Value = 70 //rand.Float64() * 100
+		opT.Value = rand.Float64() * 100
 
 		so.Sensors["InsideHumidity"] = append(so.Sensors["InsideHumidity"], opT)
 	}
