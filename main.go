@@ -1,34 +1,23 @@
 package main
 
 import (
+	"os"
+
 	"github.com/mexicanstrawberry/mcp/gatekeeper"
 	"github.com/mexicanstrawberry/mcp/recipe"
 	"github.com/mexicanstrawberry/mcp/sensor"
 	"github.com/mexicanstrawberry/mcp/web"
 	clog "github.com/morriswinkler/cloudglog"
-	"flag"
-	"os"
-)
-
-const (
-	DEBUG = false
-)
-
-var (
-	debug bool
 )
 
 func init() {
-	if os.Getenv("MCP_DEBUG") == "true" {
-		debug = true
-	}
+
 }
 
 func main() {
 
-
-
-	if debug {
+	if os.Getenv("MCP_DEBUG") == "true" {
+		// debug mode
 		clog.LogLevel = 3
 	}
 
