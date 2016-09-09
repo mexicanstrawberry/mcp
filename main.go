@@ -7,6 +7,7 @@ import (
 	"github.com/mexicanstrawberry/mcp/web"
 	clog "github.com/morriswinkler/cloudglog"
 	"flag"
+	"os"
 )
 
 const (
@@ -18,12 +19,14 @@ var (
 )
 
 func init() {
-	flag.BoolVar(&debug, "debug", false, "enable debugging")
+	if os.Getenv("MCP_DEBUG") == "true" {
+		debug = true
+	}
 }
 
 func main() {
 
-	flag.Parse()
+
 
 	if debug {
 		clog.LogLevel = 3
