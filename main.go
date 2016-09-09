@@ -25,7 +25,7 @@ func main() {
 		clog.Errorln("[mqtt] ", err)
 	}
 
-	myRecipe, err := recipe.NewRecipe("SimpleRecipe", true)
+	myRecipe, err := recipe.NewRecipe("SimpleRecipe", true) // true for dummy recipe
 	if err != nil {
 		clog.Errorln(err)
 	}
