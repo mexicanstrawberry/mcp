@@ -86,7 +86,7 @@ func (ih *InsideHumidity) regulate() {
 			}
 		}
 		// To much humidity and outside drier open the hatch
-		if offsetTargetInside < -5 && offsetOutsideInside < 0 {
+		if offsetTargetInside < -1 && offsetOutsideInside < 0 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
@@ -95,7 +95,7 @@ func (ih *InsideHumidity) regulate() {
 			}
 		}
 		// Much to much humidity and outside drier open the hatch and use the fan
-		if offsetTargetInside < -10 && offsetOutsideInside < 0 {
+		if offsetTargetInside < -5 && offsetOutsideInside < 0 {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "Hatch",
