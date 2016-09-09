@@ -7,8 +7,6 @@ import (
 
 	"fmt"
 	"math/rand"
-
-	clog "github.com/morriswinkler/cloudglog"
 )
 
 var RecipeFormat = map[string]Operation{
@@ -88,7 +86,6 @@ func (so *SimpleOperation) LoadDummyRecipe() {
 		so.Sensors["InsideTemperature"] = append(so.Sensors["InsideTemperature"], opT)
 
 	}
-	clog.Info(so.Sensors)
 }
 
 func (so *SimpleOperation) LoadRecipe(jsonRecipe []byte) error {
