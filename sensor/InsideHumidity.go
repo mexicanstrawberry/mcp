@@ -143,10 +143,10 @@ func (ih *InsideHumidity) Run() {
 	for {
 		select {
 		case t := <-ih.Ticker.C:
-			clog.Infoln("[Ticker] ", t)
+			clog.V(3).Infoln("[Ticker] ", t)
 			ih.regulate()
 		case t := <-ih.Timer.Chan.C:
-			clog.Infoln("[Timer] ", t)
+			clog.V(3).Infoln("[Timer] ", t)
 			ih.Timer = ih.nextOpTime()
 		}
 	}

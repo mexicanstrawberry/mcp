@@ -36,15 +36,20 @@ func (ih *InsideTemperature) regulate() {
 		if insideTemperature == nil {
 			return
 		}
-		//		offsetTargetInside := ih.TargetValue - insideTemperature.(float64)
-		//		offsetOutsideInside := 0.0
-		//		if outsideTemperature, exist := gatekeeper.CurrentData["OutsideTemperature"]; exist {
-		//			if outsideTemperature != nil {
-		//				offsetOutsideInside = outsideTemperature.(float64) - insideTemperature.(float64)
-		//			}
-		//		}
-		//clog.Info(offsetTargetInside)
-		//clog.Info(offsetOutsideInside)
+
+		toColdTowardsTarget := ih.TargetValue - insideTemperature.(float64)
+
+		outsideComparedToInside := 0.0
+
+		if outsideTemperature, exist := gatekeeper.CurrentData["OutsideTemperature"]; exist {
+			if outsideTemperature != nil {
+				outsideComparedToInside = outsideTemperature.(float64) - insideTemperature.(float64)
+			}
+		}
+
+		clog.Info(toColdTowardsTarget)
+		clog.Info(outsideComparedToInside)
+
 	}
 
 }
@@ -55,18 +60,18 @@ func (ih *InsideTemperature) Run() {
 	ih.Ticker = time.NewTicker(time.Duration(defaultTickInterval) * time.Second)
 	ih.Timer = ih.nextOpTime()
 
-	//for {
-	//		select {
-	//		case t := <-ih.Ticker.C:
-	//clog.Infoln("[Ticker] ", t)
-	//			ih.regulate()
+	for {
+		select {
+		case t := <-ih.Ticker.C:
+			clog.V(3).Infoln("[Ticker] ", t)
+			ih.regulate()
 
-	//		case t := <-ih.Timer.Chan.C:
-	//clog.Infoln("[Timer] ", t)
-	//			ih.Timer = ih.nextOpTime()
+		case t := <-ih.Timer.Chan.C:
+			clog.V(3).Infoln("[Timer] ", t)
+			ih.Timer = ih.nextOpTime()
 
-	//		}
-	//}
+		}
+	}
 }
 
 func (ih *InsideTemperature) nextOpTime() Timer {
