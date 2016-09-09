@@ -62,7 +62,7 @@ func (ih *InsideHumidity) regulate() {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "OutsideFan",
-				Value:     5,
+				Value:     11,
 				Priority:  events.Priority(events.P_NORM),
 			}
 		}
@@ -107,13 +107,13 @@ func (ih *InsideHumidity) regulate() {
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "OutsideFan",
-				Value:     7,
+				Value:     11,
 				Priority:  events.Priority(events.P_NORM),
 			}
 			events.Channel <- events.MqttCommand{
 				CommandID: 1,
 				Actuator:  "InsideFan",
-				Value:     8,
+				Value:     11,
 				Priority:  events.Priority(events.P_NORM),
 			}
 		}
