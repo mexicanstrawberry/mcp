@@ -5,7 +5,7 @@ applications:
   domain: mybluemix.net
   name: mcp
   host: mcp
-  disk_quota: 1024M
+  disk_quota: 32M
   buildpack: https://github.com/cloudfoundry/binary-buildpack
   services:
   - MS-IoT
