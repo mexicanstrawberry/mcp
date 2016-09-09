@@ -42,6 +42,8 @@ func (ih *InsideHumidity) regulate() {
 			return
 		}
 
+		clog.Info("------------->", ih.TargetValue)
+
 		toDryTowardsTarget := ih.TargetValue - insideHumidity.(float64)
 		outsideCompatedToInside := 0.0
 
