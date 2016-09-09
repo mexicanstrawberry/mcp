@@ -82,6 +82,7 @@ func (ih *InsideTemperature) nextOpTime() Timer {
 	// find next operaton and arm time.Timer
 	nextInterval, nextValue, err := ih.Recipe.Operation.NextOperation(ih.Name(), nextTime)
 	if err != nil {
+
 		switch err {
 		case recipe.E_NO_NEXT_OPERATION:
 			clog.Infoln(err)
