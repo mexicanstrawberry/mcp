@@ -42,8 +42,6 @@ func (ih *InsideHumidity) regulate() {
 			return
 		}
 
-		clog.Info("------------->", ih.TargetValue)
-
 		toDryTowardsTarget := ih.TargetValue - insideHumidity.(float64)
 		outsideCompatedToInside := 0.0
 
@@ -182,7 +180,7 @@ func (ih *InsideHumidity) nextOpTime() Timer {
 
 	// set func timer
 	t.Func = time.AfterFunc(nextInterval, func() {
-		clog.V(3).Infoln("[nextTimer] fire")
+		clog.V(3).Infof("[nextTimer] fire value: %f \n", nextValue)
 		ih.TargetValue = nextValue
 	})
 	// set receiver channel

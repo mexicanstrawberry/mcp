@@ -6,17 +6,28 @@ import (
 	"github.com/mexicanstrawberry/mcp/sensor"
 	"github.com/mexicanstrawberry/mcp/web"
 	clog "github.com/morriswinkler/cloudglog"
+	"flag"
 )
 
 const (
 	DEBUG = false
 )
 
-func init() {
+var (
+	debug bool
+)
 
+func init() {
+	flag.BoolVar(&debug, "debug", false, "enable debugging")
 }
 
 func main() {
+
+	flag.Parse()
+
+	if debug {
+		clog.LogLevel = 3
+	}
 
 	clog.Infoln("init mexicanstrawberry")
 
