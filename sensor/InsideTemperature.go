@@ -3,6 +3,7 @@ package sensor
 import (
 	"time"
 
+	"github.com/mexicanstrawberry/mcp/events"
 	"github.com/mexicanstrawberry/mcp/gatekeeper"
 	"github.com/mexicanstrawberry/mcp/recipe"
 
@@ -47,11 +48,68 @@ func (ih *InsideTemperature) regulate() {
 			}
 		}
 
-		clog.Info(toColdTowardsTarget)
-		clog.Info(outsideComparedToInside)
+		// To Cold and outside warmer (can't imagine how this can happen)
+		if toColdTowardsTarget > 2 && outsideComparedToInside > 5 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Hatch",
+				Value:     1, // open
+				Priority:  events.Priority(events.P_MIN),
+			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "OutsideFan",
+				Value:     11,
+				Priority:  events.Priority(events.P_NORM),
+			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "InsideFan",
+				Value:     11,
+				Priority:  events.Priority(events.P_NORM),
+			}
+		}
 
+		// To cold and outside not warmer
+		if toColdTowardsTarget > 2 && outsideComparedToInside <= 5 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Hatch",
+				Value:     0, // close
+				Priority:  events.Priority(events.P_MIN),
+			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Heater",
+				Value:     11,
+				Priority:  events.Priority(events.P_NORM),
+			}
+		}
+
+		// To Warm
+		if toColdTowardsTarget < -1 && outsideComparedToInside <= 5 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Hatch",
+				Value:     1, // open
+				Priority:  events.Priority(events.P_MIN),
+			}
+		}
+		if toColdTowardsTarget < -5 && outsideComparedToInside <= 5 {
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "Hatch",
+				Value:     1, // open
+				Priority:  events.Priority(events.P_MIN),
+			}
+			events.Channel <- events.MqttCommand{
+				CommandID: 1,
+				Actuator:  "OutsideFan",
+				Value:     11,
+				Priority:  events.Priority(events.P_NORM),
+			}
+		}
 	}
-
 }
 
 func (ih *InsideTemperature) Run() {

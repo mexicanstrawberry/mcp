@@ -84,7 +84,7 @@ func (so *SimpleOperation) LoadDummyRecipe() {
 		opT.Value = 55 //rand.Float64() * 100
 		so.Sensors["InsideHumidity"] = append(so.Sensors["InsideHumidity"], opT)
 
-		opT.Value = 23 //rand.Float64() * 100
+		opT.Value = 42 //rand.Float64() * 100
 		so.Sensors["InsideTemperature"] = append(so.Sensors["InsideTemperature"], opT)
 
 	}
