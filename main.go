@@ -14,12 +14,9 @@ func init() {
 
 func main() {
 
-	clog.Infoln("init mexicanstrawberry")
+	// TODO: implement debug clog.LogLevel and gatekeeper.Debug
 
-	err := gatekeeper.MqttData.Dial()
-	if err != nil {
-		clog.Errorln("[mqtt] ", err)
-	}
+	clog.Infoln("init mexicanstrawberry")
 
 	myRecipe, err := recipe.NewRecipe("SimpleRecipe", true) // true for dummy recipe
 	if err != nil {

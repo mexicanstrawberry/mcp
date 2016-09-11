@@ -16,21 +16,26 @@ import (
 	clog "github.com/morriswinkler/cloudglog"
 )
 
-const (
-	DEBUG = false
+var (
+	DEBUG  = false // used to enable debuging inside this package
+	NoVCAP = false // indicates if VCAP_SERVICES could be read
+
+	CurrentData     map[string]interface{}
+	CurrentCommands = make([]events.MqttCommand, 0)
 )
 
+// myttDataT holds the mqtt connection and event channel for communication
 type mqttDataT struct {
 	Options mqtt.ClientOptions
 	Client  mqtt.Client
 	Channel chan interface{}
 }
 
-var CurrentData map[string]interface{}
+var MqttData mqttDataT
 
-var CurrentCommands = make([]events.MqttCommand, 0)
-
-func (p *mqttDataT) Dial() error {
+// dial mqtt connections
+// this function is privat, do not call until mqtt.ClientOptions been set
+func (p *mqttDataT) dial() error {
 
 	if token := p.Client.Connect(); token.Wait() && token.Error() != nil {
 		return token.Error()
@@ -41,12 +46,12 @@ func (p *mqttDataT) Dial() error {
 	return nil
 }
 
-var MqttData mqttDataT
-
+// TODO: what is this for
 func (m *mqttDataT) SetChannel(c chan interface{}) {
 	m.Channel = c
 }
 
+// Default mqtt Message handler
 var MessageHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 
 	var a interface{}
@@ -54,11 +59,12 @@ var MessageHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Messa
 	json.Unmarshal(msg.Payload(), &a)
 
 	for _, v := range a.(map[string]interface{}) {
-		// TODO: UPdate map instead of overwrite
+		// TODO: Update map instead of overwrite
 		CurrentData = v.(map[string]interface{})
 	}
 }
 
+// init reads VCAP_SERCVICES and initialises mqtt connection
 func init() {
 
 	if DEBUG {
@@ -68,24 +74,47 @@ func init() {
 		mqtt.DEBUG = log.New(os.Stdout, "DEBUG: ", 0)
 	}
 
+	// this function is fird if VCAP_SERVICES was not found and refires every 10 Seconds
+	var vcapServicesNotFound func() // declare first to access var recursively
+	vcapServicesNotFound = func() {
+
+		clog.Errorln("[gatekeeper] ###############################################")
+		clog.Errorln("[gatekeeper] CRITICAL ERROR: could not read VCAP_SERVICES   ")
+		clog.Errorln("[gatekeeper] ###############################################")
+		clog.Errorln(os.Environ())
+
+		time.AfterFunc(time.Second*10, vcapServicesNotFound) // recursion
+
+	}
+
 	appEnv, err := cfenv.Current()
 	if err != nil {
-		clog.Errorln("[gatekeeper] ", err)
-	}
+		// this is critical VCAP_SERVICES was not found
+		NoVCAP = true
+		vcapServicesNotFound()
+	} else {
 
-	service, err := appEnv.Services.WithName("MS-IoT")
-	if err != nil {
-		clog.Errorln("[gatekeeper] ", err)
-	}
+		service, err := appEnv.Services.WithName("MS-IoT")
+		if err != nil {
+			clog.Errorln("[gatekeeper] ", err)
 
-	id := strings.Replace(service.Credentials["apiKey"].(string), "-", ":", -1)
-	broker := fmt.Sprintf("tls://%s:%.f", service.Credentials["mqtt_host"].(string), service.Credentials["mqtt_s_port"].(float64))
-	MqttData.Options.SetClientID(id)
-	MqttData.Options.SetUsername(service.Credentials["apiKey"].(string))
-	MqttData.Options.SetPassword(service.Credentials["apiToken"].(string))
-	MqttData.Options.AddBroker(broker)
-	MqttData.Options.SetDefaultPublishHandler(MessageHandler)
-	MqttData.Client = mqtt.NewClient(&MqttData.Options)
+		} else {
+
+			id := strings.Replace(service.Credentials["apiKey"].(string), "-", ":", -1)
+			broker := fmt.Sprintf("tls://%s:%.f", service.Credentials["mqtt_host"].(string), service.Credentials["mqtt_s_port"].(float64))
+			MqttData.Options.SetClientID(id)
+			MqttData.Options.SetUsername(service.Credentials["apiKey"].(string))
+			MqttData.Options.SetPassword(service.Credentials["apiToken"].(string))
+			MqttData.Options.AddBroker(broker)
+			MqttData.Options.SetDefaultPublishHandler(MessageHandler)
+			MqttData.Client = mqtt.NewClient(&MqttData.Options)
+
+			err := MqttData.dial()
+			if err != nil {
+				clog.Errorln("[mqtt] ", err)
+			}
+		}
+	}
 }
 
 func Run() {
@@ -96,6 +125,7 @@ func Run() {
 		select {
 
 		case <-myTicker.C:
+			// TODO: is this a dummy function ?
 			for _, command := range CurrentCommands {
 				channel := fmt.Sprintf("iot-2/type/RPi/id/Plant1/cmd/%s/fmt/json", command.Actuator)
 				payload := fmt.Sprintf("{\"d\":{ \"value\": %f}}", command.Value)
