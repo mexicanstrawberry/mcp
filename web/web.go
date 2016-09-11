@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
 	clog "github.com/morriswinkler/cloudglog"
 )
 
@@ -24,7 +25,7 @@ func StartHttpServer() {
 	// load port
 	var port string
 	if port = os.Getenv("PORT"); len(port) == 0 {
-		port = "8080"
+		port = "5000"
 	}
 
 	// load server addr
@@ -39,9 +40,16 @@ func StartHttpServer() {
 		addr = ":" + port
 	}
 
+	r := mux.NewRouter()
+
+	r.HandleFunc("/", index)
+
+	r.HandleFunc("/api/{version}/service/{id:.+}/start_recipe", ServiceStartRecipe)
+
+	http.Handle("/", r)
+
 	clog.Infoln("Server Listening", "address", addr, "protocol")
 
-	http.HandleFunc("/", index)
 	err = http.ListenAndServe(addr, nil)
 	if err != nil {
 		clog.Fatal(err)
