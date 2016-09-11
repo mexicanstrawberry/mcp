@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os"
-
 	"github.com/mexicanstrawberry/mcp/gatekeeper"
 	"github.com/mexicanstrawberry/mcp/recipe"
 	"github.com/mexicanstrawberry/mcp/sensor"
@@ -15,11 +13,6 @@ func init() {
 }
 
 func main() {
-
-	if os.Getenv("MCP_DEBUG") == "true" {
-		// debug mode
-		clog.LogLevel = 3
-	}
 
 	clog.Infoln("init mexicanstrawberry")
 
