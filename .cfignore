@@ -1,2 +1,7 @@
 launchConfigurations/
 .git/
+.dockerignore
+Dockerfile
+.idea
+**/*.iml
+env.sh
