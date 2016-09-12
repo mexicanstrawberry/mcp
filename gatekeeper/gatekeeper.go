@@ -17,8 +17,7 @@ import (
 )
 
 var (
-	DEBUG  = false // used to enable debuging inside this package
-	NoVCAP = false // indicates if VCAP_SERVICES could be read
+	DEBUG = false // used to enable debuging inside this package
 
 	CurrentData     map[string]interface{}
 	CurrentCommands = make([]events.MqttCommand, 0)
@@ -74,6 +73,8 @@ func init() {
 		mqtt.DEBUG = log.New(os.Stdout, "DEBUG: ", 0)
 	}
 
+	//TODO: unify this in a common function for all services
+	//	- web/couchdbProxy.go
 	// this function is fird if VCAP_SERVICES was not found and refires every 10 Seconds
 	var vcapServicesNotFound func() // declare first to access var recursively
 	vcapServicesNotFound = func() {
@@ -81,7 +82,9 @@ func init() {
 		clog.Errorln("[gatekeeper] ###############################################")
 		clog.Errorln("[gatekeeper] CRITICAL ERROR: could not read VCAP_SERVICES   ")
 		clog.Errorln("[gatekeeper] ###############################################")
-		clog.Errorln(os.Environ())
+		for _, k := range os.Environ() {
+			clog.Errorln(k)
+		}
 
 		time.AfterFunc(time.Second*10, vcapServicesNotFound) // recursion
 
@@ -90,7 +93,6 @@ func init() {
 	appEnv, err := cfenv.Current()
 	if err != nil {
 		// this is critical VCAP_SERVICES was not found
-		NoVCAP = true
 		vcapServicesNotFound()
 	} else {
 
