@@ -1,13 +1,16 @@
 applications:
-- path: .
-  memory: 64M
+- name: mcp_bridge_app
   instances: 1
-  domain: mybluemix.net
-  name: mcp
-  host: mcp
+  memory: 64M
   disk_quota: 32M
+  routes:
+  - route: mcp.mybluemix.net
   buildpack: https://github.com/cloudfoundry/binary-buildpack
+  env:
+    LOG_LEVEL: "0"
   services:
   - MS-IoT
   - MS-Storage
-
+  - performance-monitoring-auto
+  - Cloudant NoSQL DB-hg
+  stack: cflinuxfs2

@@ -1,6 +1,6 @@
 ---
 stages:
-- name: MyStage
+- name: Build Bridge-App
   inputs:
   - type: git
     branch: master
@@ -48,7 +48,7 @@ stages:
 
       #Cleanup
       rm -rf ../gobuild
-- name: MyStage
+- name: Deploay Bridge-App
   inputs:
   - type: job
     stage: MyStage
@@ -62,7 +62,7 @@ stages:
       region_id: ibm:yp:us-south
       organization: MexicanStrawberry
       space: dev
-      application: mcp
+      application: mcp_bridge_app
     script: |
       #!/bin/bash
       cf push "${CF_APP}"
@@ -80,7 +80,7 @@ stages:
       url: https://api.ng.bluemix.net
       organization: MexicanStrawberry
       space: dev
-    IMAGE_NAME: mcp
+    IMAGE_NAME: mcp_bridge_app
     USE_CACHED_LAYERS: 'true'
     COMMAND: "#!/bin/bash\n# The following colors have been defined to help with presentation\
       \ of logs: green, red, label_color, no_color.  \nlog_and_echo \"$LABEL\" \"\
@@ -158,7 +158,7 @@ stages:
       \ 2x-large (16384).\n#                                    Default is micro (256).\n\
       #   CONCURRENT_VERSIONS Number       Number of versions of this container to\
       \ leave active.  \n#                                    Default is 1\n#\n\n\
-      # BIND_TO=mcp\nCONTAINER_SIZE=64\n\n/bin/bash deployscripts/deploycontainer.sh\n\
+      CONTAINER_SIZE=64\n\n/bin/bash deployscripts/deploycontainer.sh\n\
       \n# Deploy Container Group:\n# Optional environment properties (can be set directly\
       \ in this script, or defined as environment properties):\n#      NAME      \
       \        Value         Description\n#   =============      =========     ==============\n\
