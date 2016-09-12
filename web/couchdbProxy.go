@@ -17,7 +17,7 @@ var (
 	couchProxyPort = ":5984"
 )
 
-func Init() {
+func init() {
 
 	// this function is fird if VCAP_SERVICES was not found and refires every 10 Seconds
 	var vcapServicesNotFound func() // declare first to access var recursively
@@ -80,8 +80,6 @@ func (p *CouchProx) handle(w http.ResponseWriter, r *http.Request) {
 }
 
 func RunCouchProxy() {
-
-	Init()
 
 	clog.Infoln("Starting CouchDbProxy address:", couchProxyPort)
 

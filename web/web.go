@@ -52,7 +52,7 @@ func StartHttpServer() {
 		// start server on port 5000 for api request
 		apiAddr := ":5000"
 		clog.Infoln("Server Listening", "address", apiAddr)
-		http.ListenAndServe(":80", nil)
+		http.ListenAndServe(apiAddr, nil)
 	}()
 
 	go RunCouchProxy()
