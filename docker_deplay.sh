@@ -19,5 +19,5 @@ fi
 
 
 #cf ic run -P -e "CCS_BIND_APP=mcp_bridge_app" --memory 64 --name MCP registry.ng.bluemix.net/mexicanstraswberry/mcep:756d1c4
-
+# BIND_TO=app_bridge
 
