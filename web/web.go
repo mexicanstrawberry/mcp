@@ -33,7 +33,7 @@ func StartHttpServer() {
 	if addr = os.Getenv("CF_INSTANCE_ADDR"); len(addr) == 0 {
 
 		// CF_INSTANCE_ADDR is empty, set it to localhost
-		addr = "127.0.0.1:" + port
+		addr = ":" + port
 
 	} else {
 		// CF_INSTANCE_ADDR is set
