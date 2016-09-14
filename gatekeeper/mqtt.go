@@ -8,6 +8,8 @@ import (
 	"os"
 	"time"
 
+	"strings"
+
 	"github.com/eclipse/paho.mqtt.golang"
 	"github.com/mexicanstrawberry/go-cfenv"
 	clog "github.com/morriswinkler/cloudglog"
@@ -87,14 +89,11 @@ func init() {
 
 		} else {
 
-			//id := strings.Replace(service.Credentials["apiKey"].(string), "-", ":", -1)
-			id := "a:7mqeaj:nxvzw0rlhs"
+			id := strings.Replace(service.Credentials["apiKey"].(string), "-", ":", -1)
 			broker := fmt.Sprintf("tls://%s:%.f", service.Credentials["mqtt_host"].(string), service.Credentials["mqtt_s_port"].(float64))
 			MqttData.Options.SetClientID(id)
-			//MqttData.Options.SetUsername(service.Credentials["apiKey"].(string))
-			MqttData.Options.SetUsername("a-7mqeaj-nxvzw0rlhs")
-			//MqttData.Options.SetPassword(service.Credentials["apiToken"].(string))
-			MqttData.Options.SetPassword("(ZYiAEpvMm6P@TF)zc")
+			MqttData.Options.SetUsername(service.Credentials["apiKey"].(string))
+			MqttData.Options.SetPassword(service.Credentials["apiToken"].(string))
 			MqttData.Options.AddBroker(broker)
 			MqttData.Options.SetDefaultPublishHandler(MessageHandler)
 			MqttData.Client = mqtt.NewClient(&MqttData.Options)
