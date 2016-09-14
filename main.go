@@ -18,7 +18,7 @@ var (
 
 func init() {
 
-	flag.IntVar(&debug, "debug", 0, "debug level 1,2 ,3")
+	flag.IntVar(&debug, "debug", 0, "debug level 1,2,3")
 	flag.StringVar(&dumpCouchDbServer, "dumpDB", "", "dump couchdb server <[user:pass@]url[:port]>")
 	flag.BoolVar(&localhost, "localhost", false, "load prepared dummy ssl certs for localhosts")
 
@@ -30,7 +30,7 @@ func main() {
 	// handle debug values
 	switch debug {
 	case 3:
-		gatekeeper.DEBUG = true
+		gatekeeper.Debug(true)
 		clog.LogLevel = 3
 	case 2:
 		clog.LogLevel = 2
