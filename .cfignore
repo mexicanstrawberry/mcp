@@ -1,7 +1,13 @@
-launchConfigurations/
 .git/
 .dockerignore
 Dockerfile
+
+*~
+.DS-STORE
+
 .idea
 **/*.iml
+
+vendor
 env.sh
+couchDb_dumps

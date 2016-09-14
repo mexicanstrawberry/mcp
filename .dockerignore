@@ -2,10 +2,13 @@
 .git
 .dockerignore
 Dockerfile
+
 *~
 .DS-STORE
+
 *.idea/
 .idea/mcp.iml
+
 vendor
 env.sh
-
+couchDb_dumps
