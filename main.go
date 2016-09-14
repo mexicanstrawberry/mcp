@@ -38,6 +38,11 @@ func main() {
 		clog.LogLevel = 1
 	}
 
+	// turn on localhost mode
+	if localhost {
+		web.Localhost = localhost
+	}
+
 	if dumpCouchDbServer != "" {
 		clog.Infoln("dumping couchdb database: ", dumpCouchDbServer)
 		err := web.DumpCouchDB(dumpCouchDbServer)

@@ -8,7 +8,7 @@ import (
 	"rsc.io/letsencrypt"
 )
 
-var Localhost bool = true
+var Localhost bool
 
 var sslManager letsencrypt.Manager
 
