@@ -1,6 +1,6 @@
 ---
 stages:
-- name: Build Bridge-App
+- name: Bridge App Build
   inputs:
   - type: git
     branch: master
@@ -48,13 +48,11 @@ stages:
 
       #Cleanup
       rm -rf ../gobuild
-- name: Deploay Bridge-App
+- name: Bridge App Deploy
   inputs:
   - type: job
-    stage: MyStage
+    stage: Bridge App Build
     job: Build
-  triggers:
-  - type: stage
   jobs:
   - name: Deploy
     type: deployer
@@ -80,7 +78,7 @@ stages:
       url: https://api.ng.bluemix.net
       organization: MexicanStrawberry
       space: dev
-    IMAGE_NAME: mcp_bridge_app
+    IMAGE_NAME: mcp
     USE_CACHED_LAYERS: 'true'
     COMMAND: "#!/bin/bash\n# The following colors have been defined to help with presentation\
       \ of logs: green, red, label_color, no_color.  \nlog_and_echo \"$LABEL\" \"\
@@ -133,9 +131,9 @@ stages:
       url: https://api.ng.bluemix.net
       organization: MexicanStrawberry
       space: dev
-    PORT: '5000'
-    CONTAINER_NAME: MCP
+    PORT: 5000, 5984, 80, 443
     DEPLOY_TYPE: red_black
+    CONTAINER_NAME: MCP
     COMMAND: "#!/bin/bash\n# The following are some example deployment scripts.  Use\
       \ these as is or fork them and include your updates here:\necho -e \"${label_color}Starting\
       \ deployment script${no_color}\"\n\n\n# To view/fork this script goto: https://github.com/Osthanes/deployscripts\n\
@@ -158,10 +156,10 @@ stages:
       \ 2x-large (16384).\n#                                    Default is micro (256).\n\
       #   CONCURRENT_VERSIONS Number       Number of versions of this container to\
       \ leave active.  \n#                                    Default is 1\n#\n\n\
-      CONTAINER_SIZE=64\n\n/bin/bash deployscripts/deploycontainer.sh\n\
-      \n# Deploy Container Group:\n# Optional environment properties (can be set directly\
-      \ in this script, or defined as environment properties):\n#      NAME      \
-      \        Value         Description\n#   =============      =========     ==============\n\
+      CONTAINER_SIZE=64\n\n/bin/bash deployscripts/deploycontainer.sh\n\n# Deploy\
+      \ Container Group:\n# Optional environment properties (can be set directly in\
+      \ this script, or defined as environment properties):\n#      NAME         \
+      \     Value         Description\n#   =============      =========     ==============\n\
       #   ROUTE_HOSTNAME      String       Specify the Hostname for the Cloud Foundry\
       \ Route you wish to assign to this container group.  By default this is not\
       \ set.\n#   ROUTE_DOMAIN        String       Specify domain name for the Cloud\
