@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	clog "github.com/morriswinkler/cloudglog"
-	"rsc.io/letsencrypt"
+	"github.com/morriswinkler/letsencrypt"
 )
 
 var Localhost bool
@@ -18,8 +18,9 @@ func init() {
 		clog.Fatalln("[web][letsencrypt]", err)
 
 	}
-
-	sslManager.SetHosts([]string{"localhost", "app.mexicanstrawberry.com"})
+	letsencrypt.Staging(true)
+	letsencrypt.Debug(true)
+	sslManager.SetHosts([]string{"app.mexicanstrawberry.com"})
 
 }
 
