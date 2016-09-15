@@ -83,7 +83,7 @@ func init() {
 		vcapServicesNotFound()
 	} else {
 
-		service, err := appEnv.Services.WithLabel("iotf-service")
+		service, err := appEnv.Services.WithName("MS-IoT")
 		if err != nil {
 			clog.Errorln("[gatekeeper] ", err)
 
