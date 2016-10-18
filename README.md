@@ -1,6 +1,6 @@
 ## Mexicabtrawberry Master Controll Programm
 
-This is raghly based on OpenAgInitative [openag_brain](https://github.com/OpenAgInitiative/openag_brain).
+This is roughly based on OpenAgInitative [openag_brain](https://github.com/OpenAgInitiative/openag_brain).
 
 This code uses the same recipe format and provides a equal api.  
 
